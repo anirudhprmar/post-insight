@@ -1,0 +1,19 @@
+{
+  "issues": {
+    "spelling": [],
+    "grammar": [],
+    "clarity": [],
+    "tone": [],
+    "structure": [],
+    "emoji": []
+  },
+  "engagement_feedback": [],
+  "suggested_improvements": [],
+  "scores": {
+    "clarity": 0,
+    "structure": 0,
+    "engagement": 0
+  },
+  "rewritten_post": "",
+  "platform": "X"
+}
