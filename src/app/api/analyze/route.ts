@@ -11,7 +11,6 @@ const inputText = z.object({
     text: z.string().min(1, "Text cannot be empty"),
 })
 
-type InputText = z.infer<typeof inputText>
 
 const mistral = createMistral({
     apiKey:process.env.MISTRAL_API_KEY || "",
@@ -30,7 +29,7 @@ export async function POST(request: NextRequest) {
        const response = await generateText({
         model,
         prompt:text,
-        system:`you are an expert Twitter copywriter who grew 10k+ tech accounts to 20%+ engagement. Analyze the provided post for its hook, structure, clarity, optimized for user engagement. Direct fixes only (no fluff), X limits (280 chars, hooks first), use emojis only when needed. Do not invent facts, mention model limitations, give generic advice, if no issues are found, state that the post is well-written.You must respond in valid JSON with the following format:
+        system:`you are an expert Twitter copywriter who grew 10k+ tech accounts to 20%+ engagement. Analyze the provided post for its hook, structure, clarity, optimized for user engagement. Direct fixes only (no fluff), X limits (280 chars, hooks first), use emojis only when needed. Do not invent facts, mention model limitations, give generic advice, if no issues are found, state that the post is well-written. Your response must be exactly::
         {
             "issues": {
                 "spelling": [],
@@ -40,6 +39,7 @@ export async function POST(request: NextRequest) {
                 "structure": [],
                 "emoji": []
             },
+            "engagement_feedback": [],
             "suggested_improvements": [],
             "scores": {
                 "clarity": 0,
@@ -56,8 +56,16 @@ export async function POST(request: NextRequest) {
         - Base scores only on the provided text.
 
         Tone:
-        - Professional, direct, and constructive.
-        - No emojis.
+        - direct, friendly, real.
+        - emojis only when needed.
+
+        Reply with only a plain JavaScript object, nothing else, and do NOT use markdown or backticks.
+        Absolutely do not include any triple backticks or specify 'json' or any other language.
+
+        Do not add, remove, or rename fields.
+        If a field is not applicable, return an empty array or empty string.
+
+
          `,
         providerOptions:{
            mistral:{
@@ -66,8 +74,10 @@ export async function POST(request: NextRequest) {
            } satisfies MistralLanguageModelOptions
         }
        })
-   
-       return NextResponse.json(response,{
+       
+        const parsedResponse = JSON.parse(response.text)
+
+       return NextResponse.json(parsedResponse,{
         status:200,
         headers:{
             "Content-Type":"application/json"

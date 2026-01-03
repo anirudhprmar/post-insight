@@ -12,7 +12,8 @@
   "scores": {
     "clarity": 0,
     "structure": 0,
-    "engagement": 0
+    "engagement": 0,
+    "virality":0
   },
   "rewritten_post": "",
   "platform": "X"
