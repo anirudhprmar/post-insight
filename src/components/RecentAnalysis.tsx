@@ -1,9 +1,13 @@
 "use client"
-import { getPosts } from "@/dexie/queries";
-import { Card, CardHeader } from "./ui/card";
+import { deletePost, getPosts } from "@/dexie/queries";
+import { Card, CardContent, CardHeader } from "./ui/card";
 import { useEffect, useState } from "react";
 import { AnalyzedPost } from "@/dexie/db";
 import Link from "next/link";
+import { Button } from "./ui/button";
+import { Trash } from "lucide-react";
+import { toast } from "sonner"
+
 
 export default function RecentAnalysis() {
     
@@ -24,6 +28,11 @@ export default function RecentAnalysis() {
         return () => {mounted = false} 
     },[])
 
+    const handleDelete = async(id:string) =>{
+      await deletePost(id).then( () =>
+        toast("Post Deleted")
+    ).catch((error) => console.log(error))
+    }
 
   return (
     <div className=" w-full h-full p-10 bg-primary-foreground rounded-xl">
@@ -32,14 +41,19 @@ export default function RecentAnalysis() {
       </div>
       
       {allPosts && allPosts.length >= 1 ? allPosts.map((post:AnalyzedPost) => ( 
-     <Link href={`/review/${post.id}`} key={post.id} >
-      <Card  className="w-full bg-primary">
-        <CardHeader className="flex-col items-center justify-center gap-2 max-w-lg">
-            <p className="font-bold italic text-xs text-primary-foreground">{post.post}</p>
+        <>
+      <Card key={post.id} className="w-full bg-primary mb-4">
+     <Link href={`/review/${post.id}`}  >
+        <CardHeader className="flex-col items-center justify-start gap-2 max-w-lg ">
+            <p className="font-bold italic text-xs text-primary-foreground text-left">{post.post}</p>
             <span className="text-muted">{post.createdAt.toDateString()}</span>
         </CardHeader>
-      </Card>
      </Link>
+     <CardContent className="text-right">
+      <Button variant={'destructive'} onClick={() => handleDelete(post.id)} size={'sm'} className="bg-secondary flex-1 hover:bg-primary-foreground"><Trash/></Button>
+     </CardContent>
+      </Card>
+        </>
     )): <div className="text-sm text-muted-foreground">No posts yet</div>}
     </div>
   )

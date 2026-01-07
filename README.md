@@ -5,6 +5,6 @@
 
 Todo
 
-- [X]- dexie db, for local storage on the browser
-- [ ]- loading skeletons
+- [X]- loading skeletons
 - [ ]- update readme from the doc
+- [ ]- deploy

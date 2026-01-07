@@ -2,7 +2,7 @@ import PostInput from "@/components/PostInput";
 import RecentAnalysis from "@/components/RecentAnalysis";
 import { Card } from "@/components/ui/card";
 
-export default function Page() {
+export default async function Page() {
   return (
     <main className="min-h-screen py-5 bg-foreground ">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
