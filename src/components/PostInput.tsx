@@ -40,7 +40,7 @@ export default function PostInput() {
           headers:{
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({post:data.text.trim()})
+          body: JSON.stringify({text:data.text.trim()})
         })
         const result = await response.json()
         console.log("Analysis result:", result)

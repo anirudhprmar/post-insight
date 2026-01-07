@@ -12,8 +12,9 @@ const inputText = z.object({
 })
 
 
+
 const mistral = createMistral({
-    apiKey:process.env.MISTRAL_API_KEY || "",
+    apiKey:process.env.MISTRAL_API_KEY ?? "",
 })
 
 const model = mistral("mistral-large-latest")
