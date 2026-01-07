@@ -5,6 +5,5 @@
 
 Todo
 
-- [X]- loading skeletons
 - [ ]- update readme from the doc
 - [ ]- deploy
