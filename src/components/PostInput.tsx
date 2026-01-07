@@ -25,6 +25,7 @@ export default function PostInput() {
     }
   })
 
+
   async function onSubmit(data:z.infer<typeof schema>) {
   try {
       console.log("Submitting post:", data)
@@ -33,7 +34,7 @@ export default function PostInput() {
         headers:{
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({text:data.text.trim()})
+        body: JSON.stringify({post:data.text.trim()})
       })
       const result = await response.json()
       console.log("Analysis result:", result)
