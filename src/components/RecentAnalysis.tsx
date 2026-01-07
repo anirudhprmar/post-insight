@@ -41,7 +41,6 @@ export default function RecentAnalysis() {
       </div>
       
       {allPosts && allPosts.length >= 1 ? allPosts.map((post:AnalyzedPost) => ( 
-        <>
       <Card key={post.id} className="w-full bg-primary mb-4">
      <Link href={`/review/${post.id}`}  >
         <CardHeader className="flex-col items-center justify-start gap-2 max-w-lg ">
@@ -53,7 +52,6 @@ export default function RecentAnalysis() {
       <Button variant={'destructive'} onClick={() => handleDelete(post.id)} size={'sm'} className="bg-secondary flex-1 hover:bg-primary-foreground"><Trash/></Button>
      </CardContent>
       </Card>
-        </>
     )): <div className="text-sm text-muted-foreground">No posts yet</div>}
     </div>
   )
