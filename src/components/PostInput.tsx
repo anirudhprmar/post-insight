@@ -9,6 +9,7 @@ import { useState } from "react"
 import { Field, FieldError, FieldGroup } from "./ui/field"
 import { ResponseType } from "@/types/response-type"
 import { Card, CardContent, CardFooter } from "./ui/card"
+import { createPost, updatePost } from "@/dexie/queries"
 
 const schema = z.object({ text: z.string().min(1,"Can't be just one word") })
 
@@ -29,6 +30,7 @@ export default function PostInput() {
   async function onSubmit(data:z.infer<typeof schema>) {
   try {
       console.log("Submitting post:", data)
+      const postInfo = await createPost(data.text)
       const response = await fetch('/api/analyze', {
         method: 'POST',
         headers:{
@@ -38,6 +40,26 @@ export default function PostInput() {
       })
       const result = await response.json()
       console.log("Analysis result:", result)
+       // use `result` (not the state variable) and normalize optional arrays/fields
+    const issues = result.issues ?? { spelling: [], grammar: [], clarity: [], tone: [], structure: [], emoji: [] }
+    const scores = result.scores ?? { clarity: 0, structure: 0, engagement: 0, virality: 0 }
+    const improvements = result.suggested_improvements ?? []
+
+    await updatePost(postInfo.id, {
+      spelling: issues.spelling ?? [],
+      grammar: issues.grammar ?? [],
+      clarity: issues.clarity ?? [],
+      tone: issues.tone ?? [],
+      structure: issues.structure ?? [],
+      rewrittenPost: result.rewritten_post ?? "",
+      structureScore: scores.structure ?? 0,
+      viralityScore: scores.virality ?? 0,
+      clarityScore: scores.clarity ?? 0,
+      enagementScore: scores.engagement ?? 0,
+      feedback: result.engagement_feedback ?? [],
+      emoji: issues.emoji ?? [],
+      improvements
+    })
       setAnalyzedData(result)
   } catch (error) {
     console.log("Error submitting post:", error)
@@ -45,7 +67,7 @@ export default function PostInput() {
   }
 
   return (
-    <div className="w-1/2 mx-auto py-10">
+    <div className="py-10 w-full h-full bg-secondary-foreground rounded-xl p-10 ">
 
       <form id="post-form" onSubmit={form.handleSubmit(onSubmit)}>
             <FieldGroup>
@@ -57,7 +79,7 @@ export default function PostInput() {
                   <Field data-invalid={fieldState.invalid}>
                     
                     <InputGroup>
-                    <InputGroupTextarea placeholder="Paste your post idea here." {...field} aria-invalid={fieldState.invalid}/>
+                    <InputGroupTextarea className="text-white" placeholder="Paste your post idea here." {...field} aria-invalid={fieldState.invalid}/>
                     <InputGroupAddon align="block-end">
                 
                     <InputGroupButton
@@ -83,7 +105,7 @@ export default function PostInput() {
 
       
         <div className="mt-10 p-5 border rounded-lg bg-gray-50">
-          <h2 className="font-bold mb-3">Analysis Result:</h2>
+          <h2 className="font-bold mb-3">Analysed Result:</h2>
           
          {analyzedData && (<Card>
           
